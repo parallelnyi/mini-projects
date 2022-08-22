@@ -1,32 +1,63 @@
 import React, { useState } from "react";
 import "./App.css";
-import JSONDATA from "./MOCK_DATA.json";
 
 function App() {
-  const [searchTerm, setSearchTerm] = useState("");
-  return (
-    <div className="App">
-      <input
-        type="text"
-        placeholder="Search..."
-        onChange={(event) => {
-          setSearchTerm(event.target.value);
-        }}
-      />
-      {JSONDATA.filter((val, key)=>{
-        if (searchTerm == ""){
-          return val
-        }else if(val.first_name.toLowerCase().includes(searchTerm.toLocaleLowerCase())){
-          return val
+  const [values, setValues] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+  });
+  const [submitted, setSubmitted]=useState(false)
+  const [valid, setValid]=useState(false)
+  const handleFirstNameInputChange = (e) => {
+    setValues({ ...values, firstName: e.target.value });
+  }
+    const handleLastNameInputChange = (e) => {
+      setValues({ ...values, lastName: e.target.value });
+    }
+      const handleEmailInputChange = (e) => {
+        setValues({ ...values, email: e.target.value });
+      }
+      const handleSubmit = (e)=>{
+        e.preventDefault()
+        if(values.firstName && values.lastName && values.email){
+          setValid(true)
         }
-      }).map((val, key) => {
-        return (
-          <div className="user" key={key}>
-            <hr />
-            <p>{val.first_name}</p>
-          </div>
-        );
-      })}
+        setSubmitted(true)
+      }
+  return (
+    <div className="form-container">
+      <form className="register-form" onSubmit={handleSubmit}>
+        {submitted && valid ? <div className="success-message">Success! Thank u for register!</div> : null}
+        <input
+        
+          onChange={handleFirstNameInputChange}
+          value={values.firstName}
+          className="form-field"
+          placeholder="First Name"
+          name="firstName"
+        />
+        {submitted && !values.firstName ?  <span>Please enter a first name</span> : null}
+        <input
+      
+        onChange={handleLastNameInputChange}
+          value={values.lastName}
+          className="form-field"
+          placeholder="Last Name"
+          name="lastName"
+        />
+         {submitted && !values.lastName ?  <span>Please enter a last name</span> : null}
+        <input
+    
+        onChange={handleEmailInputChange}
+          value={values.email}
+          className="form-field"
+          placeholder="Email"
+          name="email"
+        />
+         {submitted && !values.email ?  <span>Please enter a email</span> : null}
+        <button>Register</button>
+      </form>
     </div>
   );
 }
